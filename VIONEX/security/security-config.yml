@@ -1,0 +1,383 @@
+# NeoYou Platform Security Configuration
+
+# General Security Settings
+security:
+  # Rate Limiting
+  rate_limiting:
+    enabled: true
+    default_limit: "100/minute"
+    login_limit: "5/minute"
+    api_limit: "1000/minute"
+    burst_limit: 200
+  
+  # Authentication
+  authentication:
+    jwt:
+      algorithm: "HS256"
+      secret_key: "${JWT_SECRET_KEY}"
+      expiration: "24h"
+      refresh_token_expiration: "7d"
+    
+    session:
+      max_age: "86400"  # 24 hours in seconds
+      secure: true
+      http_only: true
+      same_site: "strict"
+    
+    password_policy:
+      min_length: 8
+      require_uppercase: true
+      require_lowercase: true
+      require_numbers: true
+      require_special_chars: false
+      prevent_reuse: 5
+      expiration_days: 90
+  
+  # CORS Configuration
+  cors:
+    allowed_origins:
+      - "https://neoyou.com"
+      - "https://www.neoyou.com"
+      - "http://localhost:3000"
+      - "http://127.0.0.1:3000"
+    allowed_methods:
+      - "GET"
+      - "POST"
+      - "PUT"
+      - "DELETE"
+      - "OPTIONS"
+    allowed_headers:
+      - "Content-Type"
+      - "Authorization"
+      - "X-Requested-With"
+    exposed_headers:
+      - "X-Total-Count"
+      - "X-Page-Number"
+      - "X-Page-Size"
+    max_age: 86400
+    credentials: true
+  
+  # Content Security Policy
+  csp:
+    default_src: ["'self'"]
+    script_src: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"]
+    style_src: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"]
+    img_src: ["'self'", "data:", "https:", "blob:"]
+    font_src: ["'self'", "https://fonts.gstatic.com"]
+    connect_src: ["'self'", "ws:", "wss:"]
+    media_src: ["'self'", "blob:", "data:"]
+    object_src: ["'none'"]
+    base_uri: ["'self'"]
+    frame_ancestors: ["'none'"]
+    form_action: ["'self'"]
+    frame_src: ["'none'"]
+  
+  # Security Headers
+  headers:
+    # Content Security Policy
+    Content-Security-Policy: "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' ws: wss:; media-src 'self' blob: data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; frame-src 'none'"
+    
+    # Strict Transport Security
+    Strict-Transport-Security: "max-age=31536000; includeSubDomains; preload"
+    
+    # X-Content-Type-Options
+    X-Content-Type-Options: "nosniff"
+    
+    # X-Frame-Options
+    X-Frame-Options: "DENY"
+    
+    # X-XSS-Protection
+    X-XSS-Protection: "1; mode=block"
+    
+    # Referrer Policy
+    Referrer-Policy: "strict-origin-when-cross-origin"
+    
+    # Permissions Policy
+    Permissions-Policy: "geolocation=(), microphone=(), camera=(), payment=()"
+    
+    # Cache Control
+    Cache-Control: "no-cache, no-store, must-revalidate"
+    Pragma: "no-cache"
+    Expires: "0"
+
+# Database Security
+database:
+  # Connection Security
+  connection:
+    ssl: true
+    ssl_mode: "verify-full"
+    ssl_cert: "/etc/ssl/certs/client-cert.pem"
+    ssl_key: "/etc/ssl/private/client-key.pem"
+    ssl_root_cert: "/etc/ssl/certs/server-ca.pem"
+  
+  # Query Security
+  query:
+    parameterized_queries: true
+    max_query_time: "30s"
+    max_result_rows: 10000
+  
+  # Backup Security
+  backup:
+    encryption: true
+    encryption_key: "${BACKUP_ENCRYPTION_KEY}"
+    retention_days: 30
+    auto_delete: true
+
+# API Security
+api:
+  # API Key Security
+  api_keys:
+    enabled: true
+    prefix: "neoyou_"
+    length: 32
+    expiration_days: 365
+  
+  # GraphQL Security
+  graphql:
+    max_complexity: 1000
+    max_depth: 10
+    introspection: false
+    playground: false
+  
+  # REST API Security
+  rest:
+    pagination:
+      default_limit: 20
+      max_limit: 100
+    versioning: true
+    version_header: "X-API-Version"
+    rate_limiting: true
+    throttling: "100/minute"
+
+# File Upload Security
+file_upload:
+  # Validation
+  validation:
+    allowed_types:
+      - "image/jpeg"
+      - "image/png"
+      - "image/gif"
+      - "video/mp4"
+      - "video/webm"
+      - "video/quicktime"
+      - "audio/mp3"
+      - "audio/wav"
+      - "application/pdf"
+    max_size: "4GB"
+    virus_scan: true
+    mime_type_check: true
+  
+  # Storage
+  storage:
+    provider: "s3"
+    bucket: "neoyu-uploads"
+    encryption: true
+    access_key: "${AWS_ACCESS_KEY}"
+    secret_key: "${AWS_SECRET_KEY}"
+    region: "us-east-1"
+    cdn: true
+    cdn_domain: "cdn.neoyou.com"
+
+# Video Processing Security
+video_processing:
+  # FFmpeg Security
+  ffmpeg:
+    allowed_codecs:
+      - "libx264"
+      - "libvpx-vp9"
+      - "aac"
+      - "libvorbis"
+    max_duration: "3600"  # 1 hour in seconds
+    max_resolution: "3840x2160"  # 4K
+    timeout: "300s"  # 5 minutes
+  
+  # Transcoding Security
+  transcoding:
+    temp_files: true
+    temp_cleanup: true
+    temp_retention: "1h"
+    watermark: true
+    watermark_position: "bottom-right"
+
+# Content Moderation Security
+content_moderation:
+  # AI Moderation
+  ai_moderation:
+    enabled: true
+    providers:
+      - "aws-rekognition"
+      - "google-vision"
+      - "azure-cognitive-services"
+    confidence_threshold: 0.8
+    auto_block: true
+    review_queue: true
+  
+  # Human Moderation
+  human_moderation:
+    enabled: true
+    reviewers: 3
+    consensus_required: 2
+    escalation_threshold: 0.9
+  
+  # Appeal Process
+  appeals:
+    enabled: true
+    max_appeals: 3
+    appeal_timeout: "72h"
+    reviewer_rotation: true
+
+# Privacy and Compliance
+privacy:
+  # Data Protection
+  data_protection:
+    gdpr: true
+    ccpa: true
+    data_residency: "eu"
+    data_retention: "365d"
+    anonymization: true
+  
+  # User Data
+  user_data:
+    export: true
+    deletion: true
+    portability: true
+    right_to_be_forgotten: true
+  
+  # Analytics
+  analytics:
+    anonymize_ip: true
+    cookie_consent: true
+    tracking_opt_out: true
+    data_minimization: true
+
+# DDoS Protection
+ddos_protection:
+  enabled: true
+  provider: "cloudflare"
+  mode: "under_attack"
+  rate_limiting: true
+  waf: true
+  auto_scaling: true
+  health_check: true
+  fallback_ip: "192.0.2.1"
+
+# Bot Detection
+bot_detection:
+  enabled: true
+  providers:
+    - "cloudflare"
+    - "google-recaptcha"
+  challenge_threshold: 0.7
+  block_threshold: 0.9
+  allow_list: []
+  custom_rules: []
+  update_frequency: "24h"
+
+# Vulnerability Management
+vulnerability_management:
+  # Scanning
+  scanning:
+    enabled: true
+    frequency: "weekly"
+    tools:
+      - "trivy"
+      - "owasp-zap"
+      - "nessus"
+    severity_levels: ["critical", "high", "medium"]
+  
+  # Patch Management
+  patching:
+    enabled: true
+    schedule: "monthly"
+    auto_patch: true
+    testing: true
+    rollback: true
+  
+  # Penetration Testing
+  pentesting:
+    enabled: true
+    frequency: "quarterly"
+    providers:
+      - "synack"
+      - "bugcrowd"
+    scope: ["web", "api", "mobile", "infrastructure"]
+
+# Incident Response
+incident_response:
+  # Monitoring
+  monitoring:
+    enabled: true
+    tools: ["prometheus", "grafana", "elasticsearch"]
+    alerts: true
+    notifications: true
+    escalation: true
+  
+  # Response Plan
+  response_plan:
+    severity_levels: ["low", "medium", "high", "critical"]
+    response_times:
+      low: "24h"
+      medium: "12h"
+      high: "6h"
+      critical: "1h"
+    contact_info: "${INCIDENT_CONTACT_INFO}"
+  
+  # Post-Incident Review
+  post_incident:
+    enabled: true
+    timeline: true
+    root_cause: true
+    action_items: true
+    reporting: true
+
+# Audit Logging
+audit_logging:
+  enabled: true
+  retention: "365d"
+  format: "json"
+  fields:
+    - "timestamp"
+    - "user_id"
+    - "action"
+    - "resource"
+    - "ip_address"
+    - "user_agent"
+    - "result"
+  storage:
+    provider: "elasticsearch"
+    index: "neoyu-audit"
+    rotation: "daily"
+    compression: true
+  events:
+    authentication: true
+    authorization: true
+    data_access: true
+    configuration_change: true
+    deletion: true
+    export: true
+    admin_actions: true
+
+# Compliance
+compliance:
+  # Standards
+  standards:
+    - "ISO 27001"
+    - "SOC 2 Type II"
+    - "PCI DSS"
+    - "HIPAA"
+    - "GDPR"
+    - "CCPA"
+  
+  # Certifications
+  certifications:
+    - "SOC 2"
+    - "ISO 27001"
+    - "PCI DSS"
+  
+  # Documentation
+  documentation:
+    policies: true
+    procedures: true
+    standards: true
+    training: true
+    assessments: true

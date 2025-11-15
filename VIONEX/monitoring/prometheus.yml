@@ -1,0 +1,181 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+# Rule files
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Rust Backend API
+  - job_name: 'neoyou-backend'
+    static_configs:
+      - targets: ['backend:8080']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+    scrape_timeout: 5s
+
+  # Python AI Services
+  - job_name: 'neoyou-ai'
+    static_configs:
+      - targets: ['ai-service:5000']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Nginx Proxy
+  - job_name: 'neoyou-nginx'
+    static_configs:
+      - targets: ['nginx:80']
+    metrics_path: '/nginx_status'
+    scrape_interval: 15s
+    scrape_timeout: 5s
+
+  # PostgreSQL Database
+  - job_name: 'neoyou-postgres'
+    static_configs:
+      - targets: ['postgres:5432']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Redis Cache
+  - job_name: 'neoyou-redis'
+    static_configs:
+      - targets: ['redis:6379']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 5s
+
+  # ClickHouse Analytics
+  - job_name: 'neoyou-clickhouse'
+    static_configs:
+      - targets: ['clickhouse:8123']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Elasticsearch Search
+  - job_name: 'neoyou-elasticsearch'
+    static_configs:
+      - targets: ['elasticsearch:9200']
+    metrics_path: '/_prometheus/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Frontend Next.js
+  - job_name: 'neoyou-frontend'
+    static_configs:
+      - targets: ['frontend:3000']
+    metrics_path: '/api/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 5s
+
+  # MinIO Object Storage
+  - job_name: 'neoyou-minio'
+    static_configs:
+      - targets: ['minio:9000']
+    metrics_path: '/minio/prometheus/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 10s
+
+  # FFmpeg Video Processing
+  - job_name: 'neoyou-ffmpeg'
+    static_configs:
+      - targets: ['ffmpeg:9000']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Custom Node Exporter for System Metrics
+  - job_name: 'neoyou-node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 15s
+    scrape_timeout: 5s
+
+  # Custom Video Processing Metrics
+  - job_name: 'neoyou-video-processor'
+    static_configs:
+      - targets: ['video-processor:8081']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+    scrape_timeout: 5s
+
+  # Custom Live Stream Metrics
+  - job_name: 'neoyou-livestream'
+    static_configs:
+      - targets: ['livestream:8082']
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+    scrape_timeout: 2s
+
+  # CDN Metrics (if using external CDN)
+  - job_name: 'neoyou-cdn'
+    static_configs:
+      - targets: ['cdn-metrics:8083']
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 10s
+
+  # Security Metrics
+  - job_name: 'neoyou-security'
+    static_configs:
+      - targets: ['security-monitor:8084']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 5s
+
+  # Business Metrics
+  - job_name: 'neoyou-business'
+    static_configs:
+      - targets: ['business-metrics:8085']
+    metrics_path: '/metrics'
+    scrape_interval: 300s  # 5 minutes
+    scrape_timeout: 30s
+
+  # AI Service Metrics
+  - job_name: 'neoyou-ai-metrics'
+    static_configs:
+      - targets: ['ai-metrics:8086']
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 10s
+
+  # Database Query Metrics
+  - job_name: 'neoyou-db-query'
+    static_configs:
+      - targets: ['db-query-monitor:8087']
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 10s
+
+  # Network Metrics
+  - job_name: 'neoyou-network'
+    static_configs:
+      - targets: ['network-monitor:8088']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+    scrape_timeout: 5s
+
+  # Storage Metrics
+  - job_name: 'neoyou-storage'
+    static_configs:
+      - targets: ['storage-monitor:8089']
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 10s

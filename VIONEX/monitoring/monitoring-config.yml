@@ -1,0 +1,454 @@
+# NeoYou Platform Monitoring Configuration
+
+# Global Settings
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'neoyu-monitor'
+    environment: '${ENVIRONMENT:-development}'
+
+# Alertmanager Configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+# Rule Files
+rule_files:
+  - "rules/*.yml"
+
+# Scrape Configurations
+scrape_configs:
+  # Prometheus Self-Monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Rust Backend Service
+  - job_name: 'neoyu-backend'
+    static_configs:
+      - targets: ['backend:8080']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+    scrape_timeout: 5s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):8080'
+        replacement: '${1}:8080'
+
+  # Python AI Service
+  - job_name: 'neoyu-ai'
+    static_configs:
+      - targets: ['ai-service:5000']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):5000'
+        replacement: '${1}:5000'
+
+  # Nginx Reverse Proxy
+  - job_name: 'neoyu-nginx'
+    static_configs:
+      - targets: ['nginx:80']
+    metrics_path: '/nginx_status'
+    scrape_interval: 15s
+    scrape_timeout: 5s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):80'
+        replacement: '${1}:80'
+
+  # PostgreSQL Database
+  - job_name: 'neoyu-postgres'
+    static_configs:
+      - targets: ['postgres:5432']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):5432'
+        replacement: '${1}:5432'
+
+  # Redis Cache
+  - job_name: 'neoyu-redis'
+    static_configs:
+      - targets: ['redis:6379']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 5s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):6379'
+        replacement: '${1}:6379'
+
+  # ClickHouse Analytics
+  - job_name: 'neoyu-clickhouse'
+    static_configs:
+      - targets: ['clickhouse:8123']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):8123'
+        replacement: '${1}:8123'
+
+  # Elasticsearch Search
+  - job_name: 'neoyu-elasticsearch'
+    static_configs:
+      - targets: ['elasticsearch:9200']
+    metrics_path: '/_prometheus/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):9200'
+        replacement: '${1}:9200'
+
+  # Frontend Next.js Application
+  - job_name: 'neoyu-frontend'
+    static_configs:
+      - targets: ['frontend:3000']
+    metrics_path: '/api/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 5s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):3000'
+        replacement: '${1}:3000'
+
+  # MinIO Object Storage
+  - job_name: 'neoyu-minio'
+    static_configs:
+      - targets: ['minio:9000']
+    metrics_path: '/minio/prometheus/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 10s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):9000'
+        replacement: '${1}:9000'
+
+  # Custom Node Exporter for System Metrics
+  - job_name: 'neoyu-node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 15s
+    scrape_timeout: 5s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):9100'
+        replacement: '${1}:9100'
+
+  # Custom Video Processing Metrics
+  - job_name: 'neoyu-video-processor'
+    static_configs:
+      - targets: ['video-processor:8081']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+    scrape_timeout: 5s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):8081'
+        replacement: '${1}:8081'
+
+  # Custom Live Stream Metrics
+  - job_name: 'neoyu-livestream'
+    static_configs:
+      - targets: ['livestream:8082']
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+    scrape_timeout: 2s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):8082'
+        replacement: '${1}:8082'
+
+  # CDN Metrics (if using external CDN)
+  - job_name: 'neoyu-cdn'
+    static_configs:
+      - targets: ['cdn-metrics:8083']
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 10s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):8083'
+        replacement: '${1}:8083'
+
+  # Security Metrics
+  - job_name: 'neoyu-security'
+    static_configs:
+      - targets: ['security-monitor:8084']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 5s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):8084'
+        replacement: '${1}:8084'
+
+  # Business Metrics
+  - job_name: 'neoyu-business'
+    static_configs:
+      - targets: ['business-metrics:8085']
+    metrics_path: '/metrics'
+    scrape_interval: 300s  # 5 minutes
+    scrape_timeout: 30s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):8085'
+        replacement: '${1}:8085'
+
+  # AI Service Metrics
+  - job_name: 'neoyu-ai-metrics'
+    static_configs:
+      - targets: ['ai-metrics:8086']
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 10s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):8086'
+        replacement: '${1}:8086'
+
+  # Database Query Metrics
+  - job_name: 'neoyu-db-query'
+    static_configs:
+      - targets: ['db-query-monitor:8087']
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 10s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):8087'
+        replacement: '${1}:8087'
+
+  # Network Metrics
+  - job_name: 'neoyu-network'
+    static_configs:
+      - targets: ['network-monitor:8088']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+    scrape_timeout: 5s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):8088'
+        replacement: '${1}:8088'
+
+  # Storage Metrics
+  - job_name: 'neoyu-storage'
+    static_configs:
+      - targets: ['storage-monitor:8089']
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 10s
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        regex: '(.+):8089'
+        replacement: '${1}:8089'
+
+# Recording Rules
+recordings:
+  # API Request Metrics
+  - record: job:http_requests_total:rate5m
+    expr: sum(rate(http_requests_total[5m])) by (job)
+  
+  - record: job:http_requests_duration_seconds:histogram_quantile
+    expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, job))
+  
+  # Database Metrics
+  - record: instance:postgresql_up:sum
+    expr: sum(postgresql_up) by (instance)
+  
+  - record: instance:postgresql_cache_hit_ratio:rate5m
+    expr: rate(postgresql_cache_hits_total[5m]) / (rate(postgresql_cache_hits_total[5m]) + rate(postgresql_cache_misses_total[5m]))
+  
+  # Redis Metrics
+  - record: instance:redis_connected_clients:sum
+    expr: sum(redis_connected_clients) by (instance)
+  
+  - record: instance:redis_memory_usage_bytes:sum
+    expr: sum(redis_memory_used_bytes) by (instance)
+  
+  # Video Processing Metrics
+  - record: job:video_processing_queue_length:sum
+    expr: sum(video_processing_queue_length) by (job)
+  
+  - record: job:video_processing_success_rate:rate5m
+    expr: sum(rate(video_processing_success_total[5m])) by (job) / sum(rate(video_processing_total[5m])) by (job)
+  
+  # User Engagement Metrics
+  - record: job:user_active_sessions:sum
+    expr: sum(user_active_sessions) by (job)
+  
+  - record: job:video_view_duration_seconds:histogram_quantile
+    expr: histogram_quantile(0.95, sum(rate(video_view_duration_seconds_bucket[5m])) by (le, job))
+
+# Alerting Rules
+groups:
+  - name: system
+    rules:
+      # High CPU Usage
+      - alert: HighCPUUsage
+        expr: 100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is above 80% for more than 5 minutes on {{ $labels.instance }}."
+      
+      # High Memory Usage
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is above 85% for more than 5 minutes on {{ $labels.instance }}."
+      
+      # High Disk Usage
+      - alert: HighDiskUsage
+        expr: (1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High disk usage on {{ $labels.instance }}"
+          description: "Disk usage is above 85% for more than 5 minutes on {{ $labels.instance }}."
+      
+      # Service Down
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.job }} is down"
+          description: "Service {{ $labels.job }} on {{ $labels.instance }} has been down for more than 1 minute."
+      
+      # High Request Rate
+      - alert: HighRequestRate
+        expr: sum(rate(http_requests_total[5m])) by (job) > 10000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High request rate on {{ $labels.job }}"
+          description: "Request rate is above 10,000 requests per minute on {{ $labels.job }}."
+      
+      # High Error Rate
+      - alert: HighErrorRate
+        expr: sum(rate(http_requests_total{status=~"5.."}[5m])) by (job) / sum(rate(http_requests_total[5m])) by (job) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate on {{ $labels.job }}"
+          description: "Error rate is above 5% on {{ $labels.job }}."
+      
+      # Database Connection Pool Exhausted
+      - alert: DatabaseConnectionPoolExhausted
+        expr: pg_stat_database_numbackends / pg_settings_max_connections > 0.9
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Database connection pool exhausted"
+          description: "Database connection pool is above 90% capacity."
+      
+      # Redis Memory Usage
+      - alert: RedisMemoryUsageHigh
+        expr: redis_memory_used_bytes / redis_memory_max_bytes > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis memory usage is high"
+          description: "Redis memory usage is above 80%."
+      
+      # Video Processing Queue Backlog
+      - alert: VideoProcessingQueueBacklog
+        expr: video_processing_queue_length > 100
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Video processing queue backlog"
+          description: "Video processing queue has more than 100 items for more than 10 minutes."
+      
+      # Low Disk Space
+      - alert: LowDiskSpace
+        expr: node_filesystem_avail_bytes / node_filesystem_size_bytes * 100 < 10
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }}"
+          description: "Disk space is below 10% on {{ $labels.instance }}."
+      
+      # High Network Traffic
+      - alert: HighNetworkTraffic
+        expr: rate(node_network_receive_bytes_total[5m]) > 100000000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High network traffic on {{ $labels.instance }}"
+          description: "Network traffic is above 100MB/s on {{ $labels.instance }}."
+      
+      # Certificate Expiry
+      - alert: CertificateExpiry
+        expr: (probe_ssl_earliest_cert_expiry - time()) / 86400 < 30
+        for: 1d
+        labels:
+          severity: warning
+        annotations:
+          summary: "SSL certificate expires soon"
+          description: "SSL certificate for {{ $labels.instance }} expires in less than 30 days."
+      
+      # Database Slow Queries
+      - alert: DatabaseSlowQueries
+        expr: rate(pg_stat_database_calls_total[5m]) > 100
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Database slow queries"
+          description: "Database has more than 100 slow queries per minute."
+      
+      # API Latency Spike
+      - alert: APILatencySpike
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, job)) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API latency spike"
+          description: "API latency is above 1 second for 95th percentile on {{ $labels.job }}."

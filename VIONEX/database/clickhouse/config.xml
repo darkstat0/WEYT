@@ -1,0 +1,405 @@
+<?xml version="1.0"?>
+<yandex>
+    <!-- ClickHouse Server Configuration -->
+    
+    <!-- Path to data directory -->
+    <path>/var/lib/clickhouse</path>
+    
+    <!-- Path to user configuration -->
+    <users_config>/etc/clickhouse-server/users.xml</users_config>
+    
+    <!-- Path to temporary data directory -->
+    <tmp_path>/var/lib/clickhouse/tmp</tmp_path>
+    
+    <!-- Path to user directory -->
+    <user_files_path>/var/lib/clickhouse/user_files</user_files_path>
+    
+    <!-- Path to access log directory -->
+    <access_log_path>/var/log/clickhouse-server/access.log</access_log_path>
+    
+    <!-- Path to error log directory -->
+    <error_log_path>/var/log/clickhouse-server/clickhouse-server.log</error_log_path>
+    
+    <!-- Path to query log directory -->
+    <query_log_path>/var/log/clickhouse-server/query.log</query_log_path>
+    
+    <!-- Path to trace log directory -->
+    <trace_log_path>/var/log/clickhouse-server/trace.log</trace_log_path>
+    
+    <!-- Path to session log directory -->
+    <session_log_path>/var/log/clickhouse-server/session.log</session_log_path>
+    
+    <!-- Path to metric log directory -->
+    <metric_log_path>/var/log/clickhouse-server/metric.log</metric_log_path>
+    
+    <!-- Path to asynchronous metric log directory -->
+    <asynchronous_metric_log_path>/var/log/clickhouse-server/asynchronous_metric.log</asynchronous_metric_log_path>
+    
+    <!-- Path to part log directory -->
+    <part_log_path>/var/log/clickhouse-server/part.log</part_log_path>
+    
+    <!-- Path to text log directory -->
+    <text_log_path>/var/log/clickhouse-server/text_log.log</text_log_path>
+    
+    <!-- Path to system log directory -->
+    <system_log_path>/var/log/clickhouse-server/system.log</system_log_path>
+    
+    <!-- Path to query_thread_log directory -->
+    <query_thread_log_path>/var/log/clickhouse-server/query_thread.log</query_thread_log_path>
+    
+    <!-- Path to crash log directory -->
+    <crash_log_path>/var/log/clickhouse-server/crash.log</crash_log_path>
+    
+    <!-- Path to openTelemetry span log directory -->
+    <opentelemetry_span_log_path>/var/log/clickhouse-server/opentelemetry_span.log</opentelemetry_span_log_path>
+    
+    <!-- Path to zookeeper log directory -->
+    <zookeeper_log_path>/var/log/clickhouse-server/zookeeper.log</zookeeper_log_path>
+    
+    <!-- Path to execution log directory -->
+    <execution_log_path>/var/log/clickhouse-server/execution.log</execution_log_path>
+    
+    <!-- Path to replication queue directory -->
+    <replication_queue_path>/var/lib/clickhouse/queue</replication_queue_path>
+    
+    <!-- Path to dictionaries directory -->
+    <dictionaries_path>/var/lib/clickhouse/dictionaries</dictionaries_path>
+    
+    <!-- Path to format schema path directory -->
+    <format_schema_path>/var/lib/clickhouse/format_schemas</format_schema_path>
+    
+    <!-- Path to user directories -->
+    <user_directories>
+        <network>
+            <ip>::/0</ip>
+        </network>
+    </user_directories>
+    
+    <!-- HTTP interface settings -->
+    <http_port>8123</http_port>
+    <https_port>8443</https_port>
+    <tcp_port>9000</tcp_port>
+    <tcp_port_secure>9440</tcp_port_secure>
+    <mysql_port>9004</mysql_port>
+    <postgresql_port>9005</postgresql_port>
+    <interserver_http_port>9009</interserver_http_port>
+    
+    <!-- Listen on all interfaces -->
+    <listen_host>::</listen_host>
+    <listen_host>0.0.0.0</listen_host>
+    
+    <!-- Open telemetry settings -->
+    <opentelemetry>
+        <endpoint>http://localhost:4318</endpoint>
+        <service_name>clickhouse</service_name>
+    </opentelemetry>
+    
+    <!-- Logging settings -->
+    <logger>
+        <level>info</level>
+        <logger>console</logger>
+    </logger>
+    
+    <!-- Mark cache settings -->
+    <mark_cache_size>5368709120</mark_cache_size>
+    
+    <!-- Background pool settings -->
+    <background_pool_size>
+        <default>16</default>
+    </background_pool_size>
+    
+    <!-- Background moves pool settings -->
+    <background_moves_pool_size>
+        <default>4</default>
+    </background_moves_pool_size>
+    
+    <!-- Background fetches pool settings -->
+    <background_fetches_pool_size>
+        <default>8</default>
+    </background_fetches_pool_size>
+    
+    <!-- Part default compression settings -->
+    <compression>
+        <case>
+            <min_part_size_ratio>0.01</min_part_size_ratio>
+            <method>zstd</method>
+        </case>
+        <case>
+            <min_part_size_ratio>0.05</min_part_size_ratio>
+            <min_part_size>1048576</min_part_size>
+            <method>zstd</method>
+        </case>
+        <case>
+            <min_part_size_ratio>0.1</min_part_size_ratio>
+            <min_part_size>16777216</min_part_size>
+            <method>zstd</method>
+        </case>
+    </compression>
+    
+    <!-- Merge tree settings -->
+    <merge_tree>
+        <max_suspicious_broken_parts>1000</max_suspicious_broken_parts>
+        <parts_to_throw_insert>0</parts_to_throw_insert>
+        <max_delay_to_insert>5</max_delay_to_insert>
+        <max_replicated_merges_in_queue>10</max_replicated_merges_in_queue>
+        <merge_with_ttl_timeout>300</merge_with_ttl_timeout>
+        <max_parts_in_total>1000000</max_parts_in_total>
+        <max_number_of_merges_for_partition>10</max_number_of_merges_for_partition>
+        <max_number_of_merges_for_partition_with_ttl>10</max_number_of_merges_for_partition_with_ttl>
+        <max_size_to_merge_at_max_space_in_pool>100000000000</max_size_to_merge_at_max_space_in_pool>
+        <min_bytes_for_wide_part>1048576</min_bytes_for_wide_part>
+        <min_rows_for_wide_part>1000000</min_rows_for_wide_part>
+        <min_bytes_for_compact_part>524288</min_bytes_for_compact_part>
+        <min_rows_for_compact_part>100000</min_rows_for_compact_part>
+        <max_parts_in_compact_part>0</max_parts_in_compact_part>
+        <max_parts_in_wide_part>0</max_parts_in_wide_part>
+        <max_compressed_block_size_size>1048576</max_compressed_block_size_size>
+        <min_compressed_block_size_size>1024</min_compressed_block_size_size>
+        <max_compress_block_size_size>1048576</max_compress_block_size_size>
+        <min_compress_block_size_size>1024</min_compress_block_size_size>
+        <index_granularity>8192</index_granularity>
+        <index_granularity_bytes>1048576</index_granularity_bytes>
+        <max_rows_to_read>100000000</max_rows_to_read>
+        <max_bytes_to_read>100000000000</max_bytes_to_read>
+        <max_rows_to_insert>100000</max_rows_to_insert>
+        <max_bytes_to_insert>1048576000</max_bytes_to_insert>
+        <max_partitions_to_read>10000</max_partitions_to_read>
+        <max_partitions_to_insert>10000</max_partitions_to_insert>
+        <max_partitions_to_insert_per_block>1000</max_partitions_to_insert_per_block>
+        <max_threads_to_insert>16</max_threads_to_insert>
+        <merge_max_block_size_to_insert>1048576</merge_max_block_size_to_insert>
+        <read_in_order_optimizations>
+            <enabled>true</enabled>
+        </read_in_order_optimizations>
+        <merge_tree>
+            <replicated_deduplication_window>100000</replicated_deduplication_window>
+            <replicated_deduplication_window_seconds>1000000</replicated_deduplication_window_seconds>
+            <parts_to_delay_insert>0</parts_to_delay_insert>
+            <parts_to_throw_insert>0</parts_to_throw_insert>
+            <max_delay_to_insert>5</max_delay_to_insert>
+            <max_replicated_merges_in_queue>10</max_replicated_merges_in_queue>
+            <merge_with_ttl_timeout>300</merge_with_ttl_timeout>
+            <max_parts_in_total>1000000</max_parts_in_total>
+            <max_number_of_merges_for_partition>10</max_number_of_merges_for_partition>
+            <max_number_of_merges_for_partition_with_ttl>10</max_number_of_merges_for_partition_with_ttl>
+            <max_size_to_merge_at_max_space_in_pool>100000000000</max_size_to_merge_at_max_space_in_pool>
+            <min_bytes_for_wide_part>1048576</min_bytes_for_wide_part>
+            <min_rows_for_wide_part>1000000</min_rows_for_wide_part>
+            <min_bytes_for_compact_part>524288</min_bytes_for_compact_part>
+            <min_rows_for_compact_part>100000</min_rows_for_compact_part>
+            <max_parts_in_compact_part>0</max_parts_in_compact_part>
+            <max_parts_in_wide_part>0</max_parts_in_wide_part>
+            <max_compressed_block_size_size>1048576</max_compressed_block_size_size>
+            <min_compressed_block_size_size>1024</min_compressed_block_size_size>
+            <max_compress_block_size_size>1048576</max_compress_block_size_size>
+            <min_compress_block_size_size>1024</min_compress_block_size_size>
+            <index_granularity>8192</index_granularity>
+            <index_granularity_bytes>1048576</index_granularity_bytes>
+            <max_rows_to_read>100000000</max_rows_to_read>
+            <max_bytes_to_read>100000000000</max_bytes_to_read>
+            <max_rows_to_insert>100000</max_rows_to_insert>
+            <max_bytes_to_insert>1048576000</max_bytes_to_insert>
+            <max_partitions_to_read>10000</max_partitions_to_read>
+            <max_partitions_to_insert>10000</max_partitions_to_insert>
+            <max_partitions_to_insert_per_block>1000</max_partitions_to_insert_per_block>
+            <max_threads_to_insert>16</max_threads_to_insert>
+            <merge_max_block_size_to_insert>1048576</merge_max_block_size_to_insert>
+            <read_in_order_optimizations>
+                <enabled>true</enabled>
+            </read_in_order_optimizations>
+        </merge_tree>
+    </merge_tree>
+    
+    <!-- Zookeeper settings -->
+    <zookeeper>
+        <node>
+            <host>localhost</host>
+            <port>2181</port>
+        </node>
+    </zookeeper>
+    
+    <!-- Remote servers settings -->
+    <remote_servers>
+        <clickhouse_remote_servers>
+            <shard>
+                <replica>
+                    <host>localhost</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+        </clickhouse_remote_servers>
+    </remote_servers>
+    
+    <!-- Storage policies -->
+    <storage_policies>
+        <default>
+            <volumes>
+                <volume>
+                    <disk>default</disk>
+                </volume>
+            </volumes>
+        </default>
+    </storage_policies>
+    
+    <!-- Disks configuration -->
+    <disks>
+        <default>
+            <path>/var/lib/clickhouse/</path>
+            <keep_free_space_bytes>1073741824</keep_free_space_bytes>
+        </default>
+    </disks>
+    
+    <!-- Dictionaries -->
+    <dictionaries_config>dictionaries.xml</dictionaries_config>
+    
+    <!-- External dictionaries -->
+    <external_dictionaries>
+        <!-- Add your external dictionaries here if needed -->
+    </external_dictionaries>
+    
+    <!-- Functions -->
+    <functions>
+        <!-- Add your custom functions here if needed -->
+    </functions>
+    
+    <!-- Query masking rules -->
+    <query_masking_rules>
+        <!-- Add your query masking rules here if needed -->
+    </query_masking_rules>
+    
+    <!-- Query log -->
+    <query_log>
+        <database>system</database>
+        <table>query_log</table>
+        <partition_by>toMonday(toDateTime(event_time))</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </query_log>
+    
+    <!-- Query thread log -->
+    <query_thread_log>
+        <database>system</database>
+        <table>query_thread_log</table>
+        <partition_by>toMonday(toDateTime(event_time))</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </query_thread_log>
+    
+    <!-- Trace log -->
+    <trace_log>
+        <database>system</database>
+        <table>trace_log</table>
+        <partition_by>toMonday(toDateTime(event_time))</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </trace_log>
+    
+    <!-- Metric log -->
+    <metric_log>
+        <database>system</database>
+        <table>metric_log</table>
+        <partition_by>toMonday(toDateTime(event_time))</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </metric_log>
+    
+    <!-- Asynchronous metric log -->
+    <asynchronous_metric_log>
+        <database>system</database>
+        <table>asynchronous_metric_log</table>
+        <partition_by>toMonday(toDateTime(event_time))</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </asynchronous_metric_log>
+    
+    <!-- Session log -->
+    <session_log>
+        <database>system</database>
+        <table>session_log</table>
+        <partition_by>toMonday(toDateTime(event_time))</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </session_log>
+    
+    <!-- Part log -->
+    <part_log>
+        <database>system</database>
+        <table>part_log</table>
+        <partition_by>toMonday(toDateTime(event_time))</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </part_log>
+    
+    <!-- Text log -->
+    <text_log>
+        <database>system</database>
+        <table>text_log</table>
+        <partition_by>toMonday(toDateTime(event_time))</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </text_log>
+    
+    <!-- System log -->
+    <system_log>
+        <database>system</database>
+        <table>system_log</table>
+        <partition_by>toMonday(toDateTime(event_time))</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </system_log>
+    
+    <!-- Execution log -->
+    <execution_log>
+        <database>system</database>
+        <table>execution_log</table>
+        <partition_by>toMonday(toDateTime(event_time))</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </execution_log>
+    
+    <!-- OpenTelemetry span log -->
+    <opentelemetry_span_log>
+        <database>system</database>
+        <table>opentelemetry_span_log</table>
+        <partition_by>toMonday(toDateTime(event_time))</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </opentelemetry_span_log>
+    
+    <!-- ZooKeeper log -->
+    <zookeeper_log>
+        <database>system</database>
+        <table>zookeeper_log</table>
+        <partition_by>toMonday(toDateTime(event_time))</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </zookeeper_log>
+    
+    <!-- Query views log -->
+    <query_views_log>
+        <database>system</database>
+        <table>query_views_log</table>
+        <partition_by>toMonday(toDateTime(event_time))</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </query_views_log>
+    
+    <!-- Asynchronous insert log -->
+    <asynchronous_insert_log>
+        <database>system</database>
+        <table>asynchronous_insert_log</table>
+        <partition_by>toMonday(toDateTime(event_time))</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </asynchronous_insert_log>
+    
+    <!-- OpenTelemetry span log -->
+    <opentelemetry_span_log>
+        <database>system</database>
+        <table>opentelemetry_span_log</table>
+        <partition_by>toMonday(toDateTime(event_time))</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </opentelemetry_span_log>
+    
+    <!-- Crash log -->
+    <crash_log>
+        <database>system</database>
+        <table>crash_log</table>
+        <flush_interval_milliseconds>1000</flush_interval_milliseconds>
+    </crash_log>
+    
+    <!-- Formats -->
+    <formats>
+        <JSONEachRow>
+            <input_format_defaults>
+                <async>0</async>
+            </input_format_defaults>
+        </JSONEachRow>
+    </formats>
+</yandex>
