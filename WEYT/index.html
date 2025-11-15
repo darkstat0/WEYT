@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuralStream - AI-Powered Video Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ml-matrix@6.10.4/lib/index.min.js"></script>
+    <script src="neuralstream-ai.js" defer></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="menu-icon">☰</div>
+            <div class="logo">
+                <svg viewBox="0 0 24 24" width="100%" height="100%">
+                    <defs>
+                        <linearGradient id="neuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#ff006e;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#8338ec;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#3a86ff;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path fill="url(#neuralGradient)" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+                <span class="logo-text">NeuralStream</span>
+            </div>
+        </div>
+        
+        <div class="header-center">
+            <div class="search-bar">
+                <div class="search-modes">
+                    <button class="search-mode active" data-mode="all">All</button>
+                    <button class="search-mode" data-mode="videos">Videos</button>
+                    <button class="search-mode" data-mode="ai-generated">AI Content</button>
+                    <button class="search-mode" data-mode="live">Live</button>
+                </div>
+                <input type="text" placeholder="Search with AI..." class="search-input">
+                <button class="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="ai-search-button">
+                    <i class="fas fa-brain"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="ai-status-bar">
+                <div class="ai-indicator">
+                    <i class="fas fa-brain"></i>
+                    <span>NeuralStream AI Active</span>
+                    <div class="ai-processing">
+                        <div class="ai-processor"></div>
+                        <span>Processing...</span>
+                    </div>
+                </div>
+                <div class="ai-metrics">
+                    <span class="ai-metric">Recommendations: <strong id="rec-accuracy">98%</strong></span>
+                    <span class="ai-metric">Personalization: <strong id="personalization-score">95%</strong></span>
+                    <span class="ai-metric">AI Content: <strong id="ai-content-score">87%</strong></span>
+                    <span class="ai-metric">VR Ready: <strong>Yes</strong></span>
+                </div>
+            </div>
+            <div class="create-dropdown">
+                <div class="create-icon">✨</div>
+                <div class="create-menu">
+                    <div class="create-item">
+                        <i class="fas fa-video"></i>
+                        <span>Upload Video</span>
+                    </div>
+                    <div class="create-item" onclick="showAIGenerationModal()">
+                        <i class="fas fa-magic"></i>
+                        <span>AI Generate Content</span>
+                    </div>
+                    <div class="create-item" onclick="window.neuralStreamAI.vrEngine.startVRExperience('demo')">
+                        <i class="fas fa-vr-cardboard"></i>
+                        <span>VR Creator</span>
+                    </div>
+                    <div class="create-item">
+                        <i class="fas fa-podcast"></i>
+                        <span>Live Stream</span>
+                    </div>
+                </div>
+            </div>
+            <div class="ai-assistant" onclick="showAIAssistantModal()">
+                <i class="fas fa-robot"></i>
+                <span>AI Assistant</span>
+            </div>
+            <div class="voice-search-btn" onclick="window.neuralStreamAI.initializeVoiceRecognition()">
+                <i class="fas fa-microphone"></i>
+                <span>Voice</span>
+            </div>
+            <div class="notifications-icon">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </div>
+            <div class="user-menu">
+                <div class="user-avatar">👤</div>
+                <div class="user-dropdown">
+                    <div class="user-stats">
+                        <h3>AI Analytics</h3>
+                        <div class="stat-item">
+                            <span class="stat-label">Engagement Score</span>
+                            <span class="stat-value" id="engagement-score">94.2%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Content Reach</span>
+                            <span class="stat-value">2.4M</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">AI Recommendations</span>
+                            <span class="stat-value" id="ai-recommendations">87%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Neural Profile</span>
+                            <span class="stat-value">
+                                <i class="fas fa-brain"></i> Active
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="ai-insights">
+            <div class="insight-card">
+                <div class="insight-header">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Insights</span>
+                </div>
+                <div class="insight-content">
+                    <div class="trending-topic">
+                        <span class="topic-trend">🔥 Trending:</span>
+                        <span class="topic-text">Quantum Computing</span>
+                    </div>
+                    <div class="ai-suggestion">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Create content about AI ethics</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item">
+                <i class="fas fa-home nav-icon"></i>
+                <span class="nav-text">Neural Feed</span>
+                <span class="nav-badge">AI</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-compass nav-icon"></i>
+                <span class="nav-text">Explore</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-subscriptions nav-icon"></i>
+                <span class="nav-text">AI Curated</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-fire nav-icon"></i>
+                <span class="nav-text">Viral Now</span>
+                <span class="nav-badge">HOT</span>
+            </a>
+            <hr class="sidebar-divider">
+            <a href="#" class="nav-item">
+                <i class="fas fa-folder nav-icon"></i>
+                <span class="nav-text">Library</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-history nav-icon"></i>
+                <span class="nav-text">Watch History</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-video nav-icon"></i>
+                <span class="nav-text">Your Content</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-chart-line nav-icon"></i>
+                <span class="nav-text">Analytics</span>
+            </a>
+            <hr class="sidebar-divider">
+            <a href="#" class="nav-item">
+                <i class="fas fa-user nav-icon"></i>
+                <span class="nav-text">Your Profile</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-cog nav-icon"></i>
+                <span class="nav-text">AI Settings</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-vr-cardboard nav-icon"></i>
+                <span class="nav-text">VR Hub</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-coins nav-icon"></i>
+                <span class="nav-text">NFT Marketplace</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- AI Hero Section -->
+        <div class="ai-hero-section">
+            <div class="hero-content">
+                <h1>Welcome to NeuralStream AI</h1>
+                <p>Experience the future of video entertainment with state-of-the-art AI, immersive VR, and intelligent content generation.</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="window.neuralStreamAI.startAIProcessing()">
+                        <i class="fas fa-play"></i> Start AI Experience
+                    </button>
+                    <button class="btn-secondary" onclick="window.neuralStreamAI.vrEngine.startVRExperience('demo')">
+                        <i class="fas fa-vr-cardboard"></i> Enter VR Mode
+                    </button>
+                    <button class="btn-accent" onclick="showAIGenerationModal()">
+                        <i class="fas fa-magic"></i> Generate Content
+                    </button>
+                </div>
+                <div class="ai-features">
+                    <div class="ai-feature">
+                        <i class="fas fa-brain"></i>
+                        <span>AI-Powered Recommendations</span>
+                    </div>
+                    <div class="ai-feature">
+                        <i class="fas fa-vr-cardboard"></i>
+                        <span>Immersive VR/AR</span>
+                    </div>
+                    <div class="ai-feature">
+                        <i class="fas fa-magic"></i>
+                        <span>AI Content Generation</span>
+                    </div>
+                    <div class="ai-feature">
+                        <i class="fas fa-globe"></i>
+                        <span>Real-time Translation</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="ai-brain-visualization">
+                    <div class="neural-network">
+                        <div class="neuron"></div>
+                        <div class="neuron"></div>
+                        <div class="neuron"></div>
+                        <div class="neuron"></div>
+                        <div class="neuron"></div>
+                        <div class="connection"></div>
+                        <div class="connection"></div>
+                        <div class="connection"></div>
+                        <div class="connection"></div>
+                        <div class="connection"></div>
+                    </div>
+                    <div class="ai-stats">
+                        <div class="stat">
+                            <span class="stat-value">99.9%</span>
+                            <span class="stat-label">Accuracy</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">50ms</span>
+                            <span class="stat-label">Latency</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">1M+</span>
+                            <span class="stat-label">Users</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI-Powered Recommendations -->
+        <div class="ai-recommendations">
+            <div class="recommendation-header">
+                <h2>AI-Powered Recommendations</h2>
+                <div class="ai-confidence">
+                    <i class="fas fa-brain"></i>
+                    <span>Match: <span id="ai-match-score">94%</span> confidence</span>
+                </div>
+            </div>
+            <div class="recommendation-tabs">
+                <button class="tab active" data-tab="for-you">For You</button>
+                <button class="tab" data-tab="trending">Trending Now</button>
+                <button class="tab" data-tab="emerging">Emerging Creators</button>
+                <button class="tab" data-tab="similar">Similar Content</button>
+                <button class="tab" data-tab="ai-curated">AI Curated</button>
+            </div>
+            <div class="ai-algorithm-selector">
+                <span>Powered by:</span>
+                <button class="ai-btn active" data-algorithm="collaborative">
+                    <i class="fas fa-users"></i> Collaborative
+                </button>
+                <button class="ai-btn" data-algorithm="content">
+                    <i class="fas fa-film"></i> Content-Based
+                </button>
+                <button class="ai-btn" data-algorithm="knowledge">
+                    <i class="fas fa-project-diagram"></i> Knowledge Graph
+                </button>
+                <button class="ai-btn" data-algorithm="deep">
+                    <i class="fas fa-brain"></i> Deep Learning
+                </button>
+            </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="categories">
+            <a href="#" class="category-item active">For You</a>
+            <a href="#" class="category-item">Gaming</a>
+            <a href="#" class="category-item">Music</a>
+            <a href="#" class="category-item">Live</a>
+            <a href="#" class="category-item">AI & Tech</a>
+            <a href="#" class="category-item">Education</a>
+            <a href="#" class="category-item">Entertainment</a>
+            <a href="#" class="category-item">Science</a>
+            <a href="#" class="category-item">VR/AR</a>
+            <a href="#" class="category-item">Blockchain</a>
+        </div>
+
+        <!-- AI Analytics Dashboard -->
+        <div class="analytics-dashboard">
+            <div class="dashboard-card">
+                <h3>Your Content Performance</h3>
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+                <div class="insights">
+                    <div class="insight-item">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>Views up 23% this week</span>
+                    </div>
+                    <div class="insight-item">
+                        <i class="fas fa-users"></i>
+                        <span>15K new subscribers</span>
+                    </div>
+                    <div class="insight-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Avg watch time: 8:32</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Video Grid -->
+        <div class="video-grid" id="video-grid">
+            <!-- AI-Enhanced Video Card 1 -->
+            <div class="video-card enhanced" data-video-id="1" data-category="technology">
+                <div class="video-thumbnail">
+                    <div class="ai-badge">
+                        <i class="fas fa-brain"></i>
+                        <span>AI Recommended</span>
+                    </div>
+                    <img src="https://picsum.photos/seed/ai-video1/320/180.jpg" alt="Video thumbnail">
+                    <span class="video-duration">15:42</span>
+                    <div class="video-quality">4K</div>
+                    <div class="ai-confidence">
+                        <i class="fas fa-chart-line"></i>
+                        <span>98% Match</span>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <div class="video-channel-avatar">
+                        <img src="https://picsum.photos/seed/ai-channel1/40/40.jpg" alt="Channel avatar">
+                        <div class="verification-badge">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="ai-badge-small">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                    </div>
+                    <div class="video-details">
+                        <h3 class="video-title">AI-Powered Web Development: Next-Gen Applications</h3>
+                        <p class="video-channel">TechAI Innovations</p>
+                        <div class="video-meta">
+                            <p class="video-stats">523K views • 1 day ago</p>
+                            <div class="engagement-score">
+                                <i class="fas fa-chart-line"></i>
+                                <span>98% Match</span>
+                            </div>
+                        </div>
+                        <div class="ai-tags">
+                            <span class="ai-tag">Machine Learning</span>
+                            <span class="ai-tag">Web Dev</span>
+                            <span class="ai-tag">AI Tools</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-actions">
+                    <button class="action-btn" title="Like">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span>12K</span>
+                    </button>
+                    <button class="action-btn" title="Dislike">
+                        <i class="fas fa-thumbs-down"></i>
+                    </button>
+                    <button class="action-btn" title="Share">
+                        <i class="fas fa-share"></i>
+                    </button>
+                    <button class="action-btn" title="Save">
+                        <i class="fas fa-bookmark"></i>
+                    </button>
+                    <button class="action-btn" title="AI Analysis">
+                        <i class="fas fa-brain"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI-Enhanced Video Card 2 -->
+            <div class="video-card enhanced" data-video-id="2" data-category="science">
+                <div class="video-thumbnail">
+                    <div class="live-badge">
+                        <span>LIVE</span>
+                        <div class="pulse"></div>
+                    </div>
+                    <img src="https://picsum.photos/seed/live-video1/320/180.jpg" alt="Video thumbnail">
+                    <span class="video-duration">LIVE</span>
+                    <div class="viewer-count">
+                        <i class="fas fa-eye"></i>
+                        <span>15.2K</span>
+                    </div>
+                    <div class="ai-confidence">
+                        <i class="fas fa-chart-line"></i>
+                        <span>95% Match</span>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <div class="video-channel-avatar">
+                        <img src="https://picsum.photos/seed/live-channel1/40/40.jpg" alt="Channel avatar">
+                        <div class="live-indicator"></div>
+                        <div class="ai-badge-small">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                    </div>
+                    <div class="video-details">
+                        <h3 class="video-title">Live: Quantum Computing Breakthrough Discussion</h3>
+                        <p class="video-channel">Science Live</p>
+                        <div class="video-meta">
+                            <p class="video-stats">LIVE • 2.3K watching</p>
+                            <div class="engagement-score">
+                                <i class="fas fa-fire"></i>
+                                <span>Trending</span>
+                            </div>
+                        </div>
+                        <div class="ai-tags">
+                            <span class="ai-tag">Quantum</span>
+                            <span class="ai-tag">Science</span>
+                            <span class="ai-tag">Live</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-actions">
+                    <button class="action-btn" title="Join Live">
+                        <i class="fas fa-play"></i>
+                        <span>Join</span>
+                    </button>
+                    <button class="action-btn" title="Set Reminder">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <button class="action-btn" title="Share">
+                        <i class="fas fa-share"></i>
+                    </button>
+                    <button class="action-btn" title="AI Translation">
+                        <i class="fas fa-language"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- VR/AR Video Card -->
+            <div class="video-card enhanced vr-card" data-video-id="3" data-category="gaming">
+                <div class="video-thumbnail">
+                    <div class="vr-badge">
+                        <i class="fas fa-vr-cardboard"></i>
+                        <span>VR Experience</span>
+                    </div>
+                    <img src="https://picsum.photos/seed/vr-video1/320/180.jpg" alt="Video thumbnail">
+                    <span class="video-duration">25:18</span>
+                    <div class="vr-quality">
+                        <i class="fas fa-vr-cardboard"></i>
+                        <span>360°</span>
+                    </div>
+                    <div class="ai-confidence">
+                        <i class="fas fa-chart-line"></i>
+                        <span>92% Match</span>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <div class="video-channel-avatar">
+                        <img src="https://picsum.photos/seed/vr-channel1/40/40.jpg" alt="Channel avatar">
+                        <div class="vr-badge-small">
+                            <i class="fas fa-vr-cardboard"></i>
+                        </div>
+                        <div class="ai-badge-small">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                    </div>
+                    <div class="video-details">
+                        <h3 class="video-title">Immersive VR: Virtual World Exploration</h3>
+                        <p class="video-channel">VR Universe</p>
+                        <div class="video-meta">
+                            <p class="video-stats">89K views • 3 days ago</p>
+                            <div class="engagement-score">
+                                <i class="fas fa-vr-cardboard"></i>
+                                <span>VR Ready</span>
+                            </div>
+                        </div>
+                        <div class="ai-tags">
+                            <span class="ai-tag">VR</span>
+                            <span class="ai-tag">360°</span>
+                            <span class="ai-tag">Immersive</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-actions">
+                    <button class="action-btn vr-btn" title="Watch in VR">
+                        <i class="fas fa-vr-cardboard"></i>
+                        <span>VR</span>
+                    </button>
+                    <button class="action-btn" title="360° View">
+                        <i class="fas fa-globe"></i>
+                    </button>
+                    <button class="action-btn" title="Share">
+                        <i class="fas fa-share"></i>
+                    </button>
+                    <button class="action-btn" title="AI Optimization">
+                        <i class="fas fa-magic"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI-Generated Content Card -->
+            <div class="video-card enhanced ai-generated" data-video-id="4" data-category="arts">
+                <div class="video-thumbnail">
+                    <div class="ai-generated-badge">
+                        <i class="fas fa-magic"></i>
+                        <span>AI Generated</span>
+                    </div>
+                    <img src="https://picsum.photos/seed/ai-gen-video1/320/180.jpg" alt="Video thumbnail">
+                    <span class="video-duration">8:24</span>
+                    <div class="generation-info">
+                        <i class="fas fa-clock"></i>
+                        <span>Generated 2h ago</span>
+                    </div>
+                    <div class="ai-confidence">
+                        <i class="fas fa-chart-line"></i>
+                        <span>88% Match</span>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <div class="video-channel-avatar">
+                        <img src="https://picsum.photos/seed/ai-gen-channel1/40/40.jpg" alt="Channel avatar">
+                        <div class="ai-badge-small">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                    </div>
+                    <div class="video-details">
+                        <h3 class="video-title">AI Creates: The Future of Digital Art</h3>
+                        <p class="video-channel">AI Creative Studio</p>
+                        <div class="video-meta">
+                            <p class="video-stats">1.2M views • 5 hours ago</p>
+                            <div class="engagement-score">
+                                <i class="fas fa-magic"></i>
+                                <span>AI Content</span>
+                            </div>
+                        </div>
+                        <div class="ai-tags">
+                            <span class="ai-tag">AI Art</span>
+                            <span class="ai-tag">Creative</span>
+                            <span class="ai-tag">Generated</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-actions">
+                    <button class="action-btn" title="Like">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span>45K</span>
+                    </button>
+                    <button class="action-btn" title="Create Similar">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <button class="action-btn" title="Share">
+                        <i class="fas fa-share"></i>
+                    </button>
+                    <button class="action-btn" title="Prompt">
+                        <i class="fas fa-code"></i>
+                    </button>
+                    <button class="action-btn" title="Mint NFT">
+                        <i class="fas fa-certificate"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Interactive Learning Card -->
+            <div class="video-card enhanced interactive" data-video-id="5" data-category="education">
+                <div class="video-thumbnail">
+                    <div class="interactive-badge">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Interactive</span>
+                    </div>
+                    <img src="https://picsum.photos/seed/interactive-video1/320/180.jpg" alt="Video thumbnail">
+                    <span class="video-duration">22:15</span>
+                    <div class="progress-indicator">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                        <span class="progress-text">65% Complete</span>
+                    </div>
+                    <div class="ai-confidence">
+                        <i class="fas fa-chart-line"></i>
+                        <span>91% Match</span>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <div class="video-channel-avatar">
+                        <img src="https://picsum.photos/seed/interactive-channel1/40/40.jpg" alt="Channel avatar">
+                        <div class="education-badge">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="ai-badge-small">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                    </div>
+                    <div class="video-details">
+                        <h3 class="video-title">Interactive Course: Advanced Python Programming</h3>
+                        <p class="video-channel">Code Academy Pro</p>
+                        <div class="video-meta">
+                            <p class="video-stats">234K views • 1 week ago</p>
+                            <div class="engagement-score">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>Course</span>
+                            </div>
+                        </div>
+                        <div class="ai-tags">
+                            <span class="ai-tag">Python</span>
+                            <span class="ai-tag">Interactive</span>
+                            <span class="ai-tag">Learning</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-actions">
+                    <button class="action-btn" title="Continue Learning">
+                        <i class="fas fa-play"></i>
+                        <span>Continue</span>
+                    </button>
+                    <button class="action-btn" title="Certificate">
+                        <i class="fas fa-certificate"></i>
+                    </button>
+                    <button class="action-btn" title="Share">
+                        <i class="fas fa-share"></i>
+                    </button>
+                    <button class="action-btn" title="AI Tutor">
+                        <i class="fas fa-robot"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- NFT/Blockchain Content Card -->
+            <div class="video-card enhanced nft-card" data-video-id="6" data-category="technology">
+                <div class="video-thumbnail">
+                    <div class="nft-badge">
+                        <i class="fas fa-coins"></i>
+                        <span>NFT Content</span>
+                    </div>
+                    <img src="https://picsum.photos/seed/nft-video1/320/180.jpg" alt="Video thumbnail">
+                    <span class="video-duration">18:42</span>
+                    <div class="nft-value">
+                        <i class="fas fa-coins"></i>
+                        <span>0.5 ETH</span>
+                    </div>
+                    <div class="ai-confidence">
+                        <i class="fas fa-chart-line"></i>
+                        <span>85% Match</span>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <div class="video-channel-avatar">
+                        <img src="https://picsum.photos/seed/nft-channel1/40/40.jpg" alt="Channel avatar">
+                        <div class="nft-badge-small">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="ai-badge-small">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                    </div>
+                    <div class="video-details">
+                        <h3 class="video-title">NFT Art Collection: Digital Masterpieces</h3>
+                        <p class="video-channel">NFT Gallery</p>
+                        <div class="video-meta">
+                            <p class="video-stats">567K views • 2 days ago</p>
+                            <div class="engagement-score">
+                                <i class="fas fa-coins"></i>
+                                <span>NFT Verified</span>
+                            </div>
+                        </div>
+                        <div class="ai-tags">
+                            <span class="ai-tag">NFT</span>
+                            <span class="ai-tag">Blockchain</span>
+                            <span class="ai-tag">Digital Art</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-actions">
+                    <button class="action-btn nft-btn" title="Purchase NFT">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Buy</span>
+                    </button>
+                    <button class="action-btn" title="View on Chain">
+                        <i class="fas fa-link"></i>
+                    </button>
+                    <button class="action-btn" title="Share">
+                        <i class="fas fa-share"></i>
+                    </button>
+                    <button class="action-btn" title="AI Valuation">
+                        <i class="fas fa-chart-line"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Collaborative Content Card -->
+            <div class="video-card enhanced collaborative" data-video-id="7" data-category="entertainment">
+                <div class="video-thumbnail">
+                    <div class="collab-badge">
+                        <i class="fas fa-users"></i>
+                        <span>Collaboration</span>
+                    </div>
+                    <img src="https://picsum.photos/seed/collab-video1/320/180.jpg" alt="Video thumbnail">
+                    <span class="video-duration">28:35</span>
+                    <div class="collaborator-count">
+                        <i class="fas fa-users"></i>
+                        <span>12 Creators</span>
+                    </div>
+                    <div class="ai-confidence">
+                        <i class="fas fa-chart-line"></i>
+                        <span>89% Match</span>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <div class="video-channel-avatar">
+                        <img src="https://picsum.photos/seed/collab-channel1/40/40.jpg" alt="Channel avatar">
+                        <div class="collab-badge-small">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="ai-badge-small">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                    </div>
+                    <div class="video-details">
+                        <h3 class="video-title">Multi-Creator Project: Building the Future Together</h3>
+                        <p class="video-channel">Creator Collective</p>
+                        <div class="video-meta">
+                            <p class="video-stats">1.8M views • 1 day ago</p>
+                            <div class="engagement-score">
+                                <i class="fas fa-users"></i>
+                                <span>Collaboration</span>
+                            </div>
+                        </div>
+                        <div class="ai-tags">
+                            <span class="ai-tag">Collab</span>
+                            <span class="ai-tag">Creators</span>
+                            <span class="ai-tag">Community</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-actions">
+                    <button class="action-btn" title="Join Project">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Join</span>
+                    </button>
+                    <button class="action-btn" title="View Collaborators">
+                        <i class="fas fa-users"></i>
+                    </button>
+                    <button class="action-btn" title="Share">
+                        <i class="fas fa-share"></i>
+                    </button>
+                    <button class="action-btn" title="AI Match">
+                        <i class="fas fa-brain"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI Translation Content Card -->
+            <div class="video-card enhanced translation-card" data-video-id="8" data-category="education">
+                <div class="video-thumbnail">
+                    <div class="translation-badge">
+                        <i class="fas fa-language"></i>
+                        <span>Multi-Language</span>
+                    </div>
+                    <img src="https://picsum.photos/seed/translation-video1/320/180.jpg" alt="Video thumbnail">
+                    <span class="video-duration">14:20</span>
+                    <div class="translation-info">
+                        <i class="fas fa-globe"></i>
+                        <span>50+ Languages</span>
+                    </div>
+                    <div class="ai-confidence">
+                        <i class="fas fa-chart-line"></i>
+                        <span>87% Match</span>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <div class="video-channel-avatar">
+                        <img src="https://picsum.photos/seed/translation-channel1/40/40.jpg" alt="Channel avatar">
+                        <div class="translation-badge-small">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div class="ai-badge-small">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                    </div>
+                    <div class="video-details">
+                        <h3 class="video-title">Global Content: Reaching Audiences Worldwide</h3>
+                        <p class="video-channel">International Media</p>
+                        <div class="video-meta">
+                            <p class="video-stats">980K views • 4 days ago</p>
+                            <div class="engagement-score">
+                                <i class="fas fa-globe"></i>
+                                <span>Global Reach</span>
+                            </div>
+                        </div>
+                        <div class="ai-tags">
+                            <span class="ai-tag">Translation</span>
+                            <span class="ai-tag">Global</span>
+                            <span class="ai-tag">Localization</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-actions">
+                    <button class="action-btn" title="Like">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span>41K</span>
+                    </button>
+                    <button class="action-btn" title="Share">
+                        <i class="fas fa-share"></i>
+                    </button>
+                    <button class="action-btn" title="Download">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="action-btn" title="Translate">
+                        <i class="fas fa-language"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Assistant Chat -->
+        <div class="ai-assistant-chat">
+            <div class="chat-header">
+                <i class="fas fa-robot"></i>
+                <span>AI Content Assistant</span>
+                <button class="chat-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="chat-messages">
+                <div class="ai-message">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <p>Hi! I can help you discover content, analyze videos, or even create new content. What would you like to explore today?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" placeholder="Ask me anything about content...">
+                <button class="send-message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- VR Experience Modal -->
+    <div class="vr-modal" id="vrModal">
+        <div class="vr-content">
+            <div class="vr-header">
+                <h3>VR Experience</h3>
+                <button class="vr-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="vr-viewer">
+                <div class="vr-placeholder">
+                    <i class="fas fa-vr-cardboard"></i>
+                    <p>VR Content Loading...</p>
+                    <div class="vr-loading">
+                        <div class="vr-loader"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="vr-controls">
+                <button class="vr-control">
+                    <i class="fas fa-play"></i>
+                    <span>Start Experience</span>
+                </button>
+                <button class="vr-control">
+                    <i class="fas fa-expand"></i>
+                    <span>Fullscreen</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Content Generator Modal -->
+    <div class="ai-generator-modal" id="aiGeneratorModal">
+        <div class="generator-content">
+            <div class="generator-header">
+                <h3>AI Content Generator</h3>
+                <button class="generator-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="generator-form">
+                <div class="form-group">
+                    <label for="contentPrompt">Describe what you want to create:</label>
+                    <textarea id="contentPrompt" placeholder="e.g., 'Create a 5-minute tutorial about machine learning basics'"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="contentStyle">Style:</label>
+                    <select id="contentStyle">
+                        <option value="educational">Educational</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="documentary">Documentary</option>
+                        <option value="tutorial">Tutorial</option>
+                        <option value="news">News Report</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="contentLength">Duration:</label>
+                    <select id="contentLength">
+                        <option value="short">Short (1-3 min)</option>
+                        <option value="medium">Medium (3-10 min)</option>
+                        <option value="long">Long (10+ min)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="contentLanguage">Language:</label>
+                    <select id="contentLanguage">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                        <option value="zh">Chinese</option>
+                    </select>
+                </div>
+                <div class="generator-actions">
+                    <button class="generate-btn">
+                        <i class="fas fa-magic"></i>
+                        <span>Generate Content</span>
+                    </button>
+                    <button class="preview-btn">
+                        <i class="fas fa-eye"></i>
+                        <span>Preview</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script src="neuralstream-interactions.js" defer></script>
+</body>
+</html>
