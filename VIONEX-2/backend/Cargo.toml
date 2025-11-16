@@ -1,0 +1,74 @@
+[package]
+name = "video-platform"
+version = "0.1.0"
+edition = "2021"
+authors = ["Video Platform Team"]
+description = "Next-generation video platform backend"
+repository = "https://github.com/video-platform/video-platform"
+license = "MIT"
+
+[dependencies]
+# Web framework
+actix-web = "4.4"
+actix-cors = "0.7"
+actix-rt = "2.9"
+
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+tokio-stream = "0.1"
+
+# Database
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "uuid", "chrono", "json"] }
+redis = { version = "0.24", features = ["tokio-comp", "connection-manager"] }
+elasticsearch = "8.5"
+
+# Authentication and security
+jsonwebtoken = "9.2"
+bcrypt = "0.15"
+uuid = { version = "1.6", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Configuration
+config = "0.14"
+dotenvy = "0.15"
+
+# AI/ML integration
+reqwest = { version = "0.11", features = ["json"] }
+tokio-tungstenite = "0.21"
+
+# Video processing
+ffmpeg-next = "6.0"
+
+# Utilities
+log = "0.4"
+env_logger = "0.10"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Rate limiting
+actix-web-lab = "0.20"
+
+# CORS
+actix-cors = "0.7"
+
+# WebSocket
+actix-ws = "0.3"
+
+# Metrics
+prometheus = "0.13"
+
+# Health checks
+actix-health = "0.4"
+
+# File handling
+aws-sdk-s3 = "1.23"
+aws-config = "1.0"
+multipart = "0.18"
